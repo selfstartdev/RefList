@@ -1,0 +1,46 @@
+{
+  "name": "reflist",
+  "version": "0.0.1",
+  "description": "Reference based linked list solution in typescript",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npx ts-node ./index.ts",
+    "pretest": "npx eslint . --ext .ts",
+    "test": "nyc mocha ./test/*.spec.ts --require ts-node/register",
+    "posttest": "npm run coverage",
+    "coverage": "nyc report --reporter=json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selfstartdev/reflist.git"
+  },
+  "author": "Brian Brennan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/selfstartdev/reflist/issues"
+  },
+  "homepage": "https://github.com/selfstartdev/reflist#readme",
+  "devDependencies": {
+    "@types/chai": "4.3.1",
+    "@types/expect": "24.3.0",
+    "@types/mocha": "9.1.1",
+    "@types/node": "18.0.6",
+    "@types/object-path": "0.11.1",
+    "@types/sinon": "10.0.13",
+    "@types/sinon-chai": "3.2.8",
+    "@typescript-eslint/eslint-plugin": "5.30.7",
+    "@typescript-eslint/parser": "5.30.7",
+    "chai": "4.3.6",
+    "codecov": "3.8.3",
+    "eslint": "8.20.0",
+    "mocha": "10.0.0",
+    "nyc": "15.1.0",
+    "sinon": "14.0.0",
+    "sinon-chai": "3.7.0",
+    "ts-node": "10.9.1",
+    "typescript": "4.7.4"
+  },
+  "dependencies": {
+    "object-path": "0.11.8"
+  }
+}
