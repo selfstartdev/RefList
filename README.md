@@ -1,2 +1,2 @@
-# list-state
- Manager for building optimal redux state structure
+# RefList
+Reference based linked list solution in typescript
