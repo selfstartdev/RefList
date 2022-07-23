@@ -2,7 +2,6 @@ import objectPath from 'object-path';
 
 import { StringOrNumber, IListState, ListNode, FilterFn, IteratorFn } from '../types/types';
 
-
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> implements IListState<KeyType, DataType> {
     readonly keyPath: string;
 
