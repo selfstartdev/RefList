@@ -1,6 +1,13 @@
 import objectPath from 'object-path';
 
-import { StringOrNumber, IListState, ListNode, FilterFn, IteratorFn } from '../types/types';
+import {
+    StringOrNumber,
+    IListState,
+    ListNode,
+    FilterFn,
+    IteratorFn,
+    ComparatorFn,
+} from '../types/types';
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> implements IListState<KeyType, DataType> {
     readonly keyPath: string;
@@ -216,11 +223,69 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this;
     }
 
-    /** METHODS TO ADD */
+    concat(data: RefList<KeyType, DataType> | DataType[]): RefList<KeyType, DataType> {
+        data.forEach((item) => {
+            this.add(item);
+        });
 
-    /**
-     * orderBy(field, isDesc)
-     * forEach()
-     */
+        return this;
+    }
+
+    mergeSort(compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
+        return this._divideMergeSort(this, compFn);
+    }
+
+    _divideMergeSort(list: RefList<KeyType, DataType>, compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
+        const halfLength = Math.ceil(list.size / 2);
+        let leftList = list.slice(0, halfLength);
+        let rightList = list.slice(halfLength, list.size - 1);
+
+        console.log('dividing:', list);
+
+        if (halfLength > 1) {
+            leftList = this._divideMergeSort(leftList, compFn);
+            rightList = this._divideMergeSort(rightList, compFn);
+        }
+
+        return this._combineMergeSort(leftList, rightList, compFn);
+    }
+
+    _combineMergeSort(leftList: RefList<KeyType, DataType>,
+                      rightList: RefList<KeyType, DataType>,
+                      compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
+        let leftIndex = 0,
+            rightIndex = 0,
+            leftSize = leftList.size,
+            rightSize = rightList.size,
+            combinedList = new RefList<KeyType, DataType>(this.keyPath);
+
+        while (leftIndex < leftSize || rightIndex < rightSize) {
+            let leftItem = leftList[leftIndex],
+                rightItem = rightList[rightIndex];
+
+            if (leftItem !== undefined) {
+                if (rightItem === undefined) {
+                    combinedList.add(leftItem);
+                    leftIndex++;
+                } else {
+                    if (compFn(leftItem, rightItem)) {
+                        combinedList.add(leftItem);
+                        leftIndex++;
+                    } else {
+                        combinedList.add(rightItem);
+                        rightIndex++;
+                    }
+                }
+            } else {
+                if (rightItem !== undefined) {
+                    combinedList.add(rightItem);
+                    rightIndex++;
+                }
+            }
+        }
+
+        return combinedList;
+    }
+
 }
 

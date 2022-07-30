@@ -32,6 +32,4 @@ const dataArray = [
 ];
 
 const list = new RefList<string, typeof dataArray[0]>('color', dataArray);
-console.log(list.filter((item) => item.color.indexOf('a') >= 0));
-
-list.forEach(item => console.log(item.color));
+console.log(list.mergeSort((a, b) => a.color >= b.color));
