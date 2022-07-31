@@ -5,7 +5,6 @@
   "main": "index.ts",
   "scripts": {
     "start": "npx ts-node ./index.ts",
-    "pretest": "npx eslint . --ext .ts",
     "test": "nyc mocha ./test/*.spec.ts --require ts-node/register",
     "posttest": "npm run coverage",
     "coverage": "nyc report --reporter=json"

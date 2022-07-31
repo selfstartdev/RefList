@@ -23,9 +23,9 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         dataArray.forEach((item: DataType) => this.add(item));
     }
 
-    /** Curry-able Methods */
+    /** Chain-able Methods */
 
-    add(item: DataType): RefList<KeyType, DataType> {
+    add(item: DataType | ListNode<KeyType, DataType>): RefList<KeyType, DataType> {
         const itemId = this.getIdOfItem(item);
 
         let newNode = {
@@ -124,8 +124,43 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this;
     }
 
+    set(nodeKey: KeyType, node: ListNode<KeyType, DataType> | DataType): RefList<KeyType, DataType> {
+        const tempNodeRef = this.nodes[nodeKey];
+        this.nodes[nodeKey] = {
+            ...node,
+            next: tempNodeRef.next,
+            prev: tempNodeRef.prev
+        };
 
-    /** non-curryable methods */
+        return this;
+    }
+
+    setAt(nodePos: number, node: ListNode<KeyType, DataType> | DataType): RefList<KeyType, DataType> {
+        const tempNodeRef = this.at(nodePos);
+        this.nodes[this.getIdOfItem(tempNodeRef)] = {
+            ...node,
+            next: tempNodeRef.next,
+            prev: tempNodeRef.prev
+        };
+
+        return this;
+    }
+
+
+    /** non-Chain-able methods */
+
+    get(nodeKey: KeyType): ListNode<KeyType, DataType> {
+        return this.nodes[nodeKey];
+    }
+
+    getTail(): ListNode<KeyType, DataType> {
+        return this.get(this.tail);
+    }
+
+    getHead(): ListNode<KeyType, DataType> {
+        return this.get(this.head);
+    }
+
     at(index: number): ListNode<KeyType, DataType> {
         let currentNode = this.nodes[this.head];
         for (let i = 0; i <= index; i++) {
@@ -145,9 +180,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this;
     }
 
-    /** Helper Methods */
-
-    getIdOfItem(item: DataType) {
+    getIdOfItem(item: DataType): KeyType {
         return objectPath.get(item, this.keyPath);
     }
 
