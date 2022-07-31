@@ -258,9 +258,19 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
     /** Sort Management Methods */
 
     /**
-     * Employs a merge sort operation on a list, defaulting to 'this' list.
+     * Employs a merge sort operation on a list
      */
-    sort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType> = this): RefList<KeyType, DataType> {
+    sort(compareFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
+        const sortedList = this._handleSort(compareFn, this);
+
+        this.nodes = sortedList.nodes;
+        this.head = sortedList.head;
+        this.tail = sortedList.tail;
+
+        return this;
+    }
+
+    _handleSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType> = this): RefList<KeyType, DataType> {
         if (list.size <= 1) {
             return list;
         }
@@ -271,8 +281,8 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
 
         return this.merge(
             compareFn,
-            this.sort(compareFn, leftList),
-            this.sort(compareFn, rightList)
+            this._handleSort(compareFn, leftList),
+            this._handleSort(compareFn, rightList)
         );
     }
 
@@ -298,7 +308,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return result.concat(leftList.slice(indexLeft)).concat(rightList.slice(indexRight));
     }
 
-    mergeAndSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType>): RefList<KeyType, DataType> {
+    mergeAndSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType> | DataType[]): RefList<KeyType, DataType> {
         return this.concat(list).sort(compareFn);
     }
 }

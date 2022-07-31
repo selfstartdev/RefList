@@ -360,16 +360,137 @@ describe('RefList', () => {
     });
 
     /** sort functionality */
-    describe('sort', () => {});
-    describe('merge', () => {});
-    describe('mergeAndSort', () => {});
+    describe('sort', () => {
+        let compareFn1,
+            compareFn2;
+
+        beforeEach(() => {
+            compareFn1 = sinon.spy((a, b) => a.color <= b.color);
+            compareFn2 = sinon.spy((a, b) => a.color > b.color);
+        });
+
+        it('should handle sorting items forwards', () => {
+            const sortedArray = colors;
+            sortedArray.sort((a, b) => a.color <= b.color ? -1 : 1);
+            testList.sort(compareFn1);
+
+            sortedArray.forEach((color, i) => {
+                expect(color.color).to.equal(testList.at(i).color);
+            });
+
+            expect(compareFn1).to.be.have.been.called;
+        });
+
+        it('should handle sorting items in reverse', () => {
+            const sortedArray = colors;
+            sortedArray.sort((a, b) => a.color > b.color ? -1 : 1);
+            testList.sort(compareFn2);
+
+            sortedArray.forEach((color, i) => {
+                expect(color.color).to.equal(testList.at(i).color);
+            });
+
+            expect(compareFn2).to.be.have.been.called;
+        });
+    });
+
+    describe('_handleSort', () => {
+        let mergeSpy, handleSortSpy, compareFn;
+
+        beforeEach(() => {
+            mergeSpy = sinon.spy(testList, 'merge');
+            handleSortSpy = sinon.spy(testList, '_handleSort');
+            compareFn = sinon.spy((a, b) => a.color < b.color);
+        });
+
+        it('should call merge', () => {
+            testList._handleSort(compareFn);
+            expect(mergeSpy).to.have.been.called;
+        });
+
+        it('should divide the proper amounts of times (logarithmic)', () => {
+            const expectedDivideCount = Math.log(testList.size) * testList.size;
+            testList._handleSort(compareFn);
+            expect(handleSortSpy.callCount).be.be.lessThanOrEqual(expectedDivideCount);
+        });
+
+        it('should handle sorting items forwards', () => {
+            const sortedArray = colors;
+            sortedArray.sort((a, b) => a.color <= b.color ? -1 : 1);
+
+            testList._handleSort(compareFn).forEach((node, i) => {
+                expect(node.color).to.equal(sortedArray[i].color);
+            });
+
+            expect(compareFn).to.be.have.been.called;
+        });
+
+        it('should handle sorting items in reverse', () => {
+            const sortedArray = colors;
+            sortedArray.sort((a, b) => a.color > b.color ? -1 : 1);
+
+            testList._handleSort(compareFn).forEach((node, i) => {
+                expect(node.color).to.equal(sortedArray[sortedArray.length - 1 - i].color);
+            });
+
+            expect(compareFn).to.be.have.been.called;
+        });
+    });
+
+    /** TODO: Need to consider a good way of properly testing the merge functionality */
+    describe('merge', () => {
+        let compareFn;
+
+        beforeEach(() => {
+            compareFn = sinon.spy((a, b) => a.color < b.color);
+        });
+    });
+
+    describe('mergeAndSort', () => {
+        let compareFn;
+
+        beforeEach(() => {
+            compareFn = sinon.spy((a, b) => a.color < b.color);
+        });
+
+        it('should put a concatenated node at the start', () => {
+            const newColor = { color: 'avocado', value: 'avocado' };
+            testList.mergeAndSort(compareFn, [newColor]);
+            expect(testList.at(0).color).to.equal(newColor.color);
+            expect(testList.head).to.equal(newColor.color);
+            expect(testList.at(1).prev).to.equal(newColor.color);
+        });
+
+        it('should put a concatenated node at the end', () => {
+            const newColor = { color: 'zucchini', value: 'zucchini' };
+            testList.mergeAndSort(compareFn, [newColor]);
+            expect(testList.at(testList.size - 1).color).to.equal(newColor.color);
+            expect(testList.tail).to.equal(newColor.color);
+            expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
+        });
+
+        it('should handle putting multiple nodes', () => {
+            const newColors = [
+                { color: 'avocado', value: 'avocado' },
+                { color: 'zucchini', value: 'zucchini' },
+                { color: 'fuschia', value: 'fuschia' }
+            ];
+            const sortedArray = colors.concat(newColors);
+            sortedArray.sort((a, b) => a.color < b.color ? -1 : 1);
+            testList.mergeAndSort(compareFn, newColors);
+
+            testList.forEach((node, i) => {
+                expect(node.color).to.equal(sortedArray[i].color);
+            });
+        });
+    });
 
     describe('Chainable Methods', () => {
         it('should be chainable from the given methods', () => {
             expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
-            expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
-            expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.addBefore('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.update('red', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
+            expect(testList.addAfter('red', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addBefore('red', { color: 'purple' })).to.be.instanceOf(RefList);
             expect(testList.addAt(0, { color: 'purple' })).to.be.instanceOf(RefList);
             expect(testList.slice(0, 1)).to.be.instanceOf(RefList);
             expect(testList.splice(0, 2)).to.be.instanceOf(RefList);
