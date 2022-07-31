@@ -21,4 +21,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
       - run: npm install
-      - run: npm publish --new-version ${{ github.event.release.tag_name }}
+      - run: npm publish --new-version reflist@${{ github.event.release.tag_name }}
