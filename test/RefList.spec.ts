@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { RefList } from '../src/RefList';
-import { ListNode } from '../types/types';
+import { FilterFn, ListNode, IteratorFn } from '../types/types';
 import colors, { ColorData } from './test-cases/colors';
 
 const expect = chai.expect;
@@ -255,18 +255,60 @@ describe('RefList', () => {
             expect(testList.tail).to.equal(tailRef.color);
         });
     });
-    describe('filter', () => {});
-    describe('concat', () => {});
-    describe('forEach', () => {});
 
-    describe('Chainable Methods', () => {
-        it('should be chainable from the given methods', () => {
-            expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
-            expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
-            expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.addBefore('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.addAt(0, { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.slice(0, 1)).to.be.instanceOf(RefList);
+    describe('filter', () => {
+        it('should remove nodes that do not match filter function', () => {
+            const filterFn: FilterFn<ColorData> = (item) => !item.color.includes('y');
+
+            testList.filter(filterFn);
+
+            expect(testList.get('yellow')).to.be.undefined;
+        });
+    });
+
+    describe('forEach', () => {
+        it('should call once per item', () => {
+            const fnSpy: IteratorFn<ColorData> = sinon.spy((item: ColorData, i: number) => {
+                expect(item.color).to.equal(colors[i].color);
+            });
+
+            testList.forEach(fnSpy);
+
+            expect(fnSpy).to.have.been.callCount(colors.length);
+        });
+    });
+
+    describe('concat', () => {
+        it('should concatenate an array', () => {
+            testList.concat([{
+                color: 'fuschia',
+                value: 'fuschia'
+            }, {
+                color: 'lavender',
+                value: 'lavender'
+            }]);
+
+            expect(testList.size).to.equal(colors.length + 2);
+            expect(testList.tail).to.equal('lavender');
+            expect(testList.at(testList.size - 1).color).to.equal('lavender');
+            expect(testList.at(testList.size - 2).color).to.equal('fuschia');
+        });
+
+        it('should concatenate another reflist', () => {
+            const concatendatedList = new RefList<string, ColorData>('color', [{
+                color: 'fuschia',
+                value: 'fuschia'
+            }, {
+                color: 'lavender',
+                value: 'lavender'
+            }]);
+
+            testList.concat(concatendatedList);
+
+            expect(testList.size).to.equal(colors.length + 2);
+            expect(testList.tail).to.equal('lavender');
+            expect(testList.at(testList.size - 1).color).to.equal('lavender');
+            expect(testList.at(testList.size - 2).color).to.equal('fuschia');
         });
     });
 
@@ -289,12 +331,51 @@ describe('RefList', () => {
         });
     });
 
-    describe('at', () => {});
-    describe('getIdOfItem', () => {});
-    describe('toArray', () => {});
+    describe('at', () => {
+        it('should be able to get a node in various positions', () => {
+            colors.forEach((color, i) => {
+                expect(testList.at(i).color).to.equal(color.color);
+            });
+        });
+    });
+
+    describe('getIdOfItem', () => {
+        it('should be able to get the id of every item', () => {
+            colors.forEach((color, i) => {
+                expect(testList.getIdOfItem(testList.at(i))).to.equal(color.color);
+            });
+        });
+    });
+
+    describe('toArray', () => {
+        it('should map to an array properly', () => {
+            const newArray = testList.toArray();
+
+            newArray.forEach((color, i) => {
+                expect(color.color).to.equal(colors[i].color);
+            });
+
+            expect(newArray).to.be.instanceOf(Array);
+        });
+    });
 
     /** sort functionality */
     describe('sort', () => {});
     describe('merge', () => {});
     describe('mergeAndSort', () => {});
+
+    describe('Chainable Methods', () => {
+        it('should be chainable from the given methods', () => {
+            expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
+            expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
+            expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addBefore('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addAt(0, { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.slice(0, 1)).to.be.instanceOf(RefList);
+            expect(testList.splice(0, 2)).to.be.instanceOf(RefList);
+            expect(testList.filter(item => true)).to.be.instanceOf(RefList);
+            expect(testList.forEach(() => {})).to.be.instanceOf(RefList);
+            expect(testList.concat([])).to.be.instanceOf(RefList);
+        });
+    });
 });

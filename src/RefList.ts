@@ -165,7 +165,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         let i = 0;
 
         while (currentNode) {
-            if (i < start || i >= end) {
+            if ((i < start || i >= end)) {
                 this.delete(this.getIdOfItem(currentNode));
             }
 
