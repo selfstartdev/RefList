@@ -2,12 +2,15 @@
   "name": "reflist",
   "version": "0.0.1",
   "description": "Reference based linked list solution in typescript",
-  "main": "index.ts",
+  "main": "dist/RefList.js",
+  "types": "dist/RefList.d.ts",
   "scripts": {
     "start": "npx ts-node ./index.ts",
     "test": "nyc mocha ./test/*.spec.ts --require ts-node/register",
     "posttest": "npm run coverage",
-    "coverage": "nyc report --reporter=json"
+    "coverage": "nyc report --reporter=json",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
