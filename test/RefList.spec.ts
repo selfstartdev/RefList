@@ -118,10 +118,49 @@ describe('RefList', () => {
         });
     });
 
-    describe('addAfter', () => {});
+    describe('addAfter', () => {
+        it('should properly put a node in the middle of a list', () => {
+            let newColor: ColorData = {
+                    color: 'purple',
+                    value: 'purple'
+                },
+                middlePos = Math.floor(testList.size / 2),
+                middleNode = testList.at(middlePos),
+                sizeRef = testList.size;
+
+            testList.addAfter(testList.getIdOfItem(middleNode), newColor);
+
+            expect(testList.at(middlePos).next).to.equal(newColor.color);
+            expect(testList.at(middlePos + 2).prev).to.equal(newColor.color);
+            expect(testList.at(middlePos + 1).color).to.equal(newColor.color);
+            expect(testList.size).to.equal(sizeRef + 1);
+        });
+
+        it('should properly put a node at the end of a list', () => {
+            let newColor: ColorData = {
+                    color: 'purple',
+                    value: 'purple'
+                };
+
+            testList.addAfter(testList.tail, newColor);
+
+            expect(testList.at(testList.size - 1).color).to.equal(newColor.color);
+            expect(testList.tail).to.equal(newColor.color);
+            expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
+        });
+    });
+
     describe('addBefore', () => {});
     describe('set', () => {});
     describe('setAt', () => {});
+
+    describe('Chainable Methods', () => {
+        it('should be chainable from the given methods', () => {
+            expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
+            expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
+            expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+        });
+    });
 
     /** non-chainable */
     describe('get', () => {});
