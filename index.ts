@@ -32,4 +32,6 @@ const dataArray = [
 ];
 
 const list = new RefList<string, typeof dataArray[0]>('color', dataArray);
-console.log(list.mergeSort((a, b) => a.color >= b.color));
+console.log(list.sort((a, b) => a.color <= b.color));
+
+console.log(list.mergeAndSort((a, b) => a.color <= b.color, new RefList<string, typeof dataArray[0]>('color', [{ color: 'purple', value: 'purple'}])));

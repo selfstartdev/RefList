@@ -17,7 +17,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
     size: number = 0;
     nodes: Record<KeyType, ListNode<KeyType, DataType>> = {} as Record<KeyType, ListNode<KeyType, DataType>>;
 
-    constructor(keyPath: string, dataArray: DataType[] = []) {
+    constructor(keyPath: string, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
         this.keyPath = keyPath;
 
         dataArray.forEach((item: DataType) => this.add(item));
@@ -166,7 +166,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return dataArray;
     }
 
-    slice(start: number, end: number): RefList<KeyType, DataType> {
+    slice(start: number, end: number = this.size): RefList<KeyType, DataType> {
         const slicedList = new RefList<KeyType, DataType>(this.keyPath, []);
         let remainingNodes = end - start;
         let currentNode = this.at(start);
@@ -231,61 +231,51 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this;
     }
 
-    mergeSort(compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
-        return this._divideMergeSort(this, compFn);
+    /** Sort Management Methods */
+
+    mergeAndSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType>): RefList<KeyType, DataType> {
+        return this.concat(list).sort(compareFn);
     }
 
-    _divideMergeSort(list: RefList<KeyType, DataType>, compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
-        const halfLength = Math.ceil(list.size / 2);
-        let leftList = list.slice(0, halfLength);
-        let rightList = list.slice(halfLength, list.size - 1);
-
-        console.log('dividing:', list);
-
-        if (halfLength > 1) {
-            leftList = this._divideMergeSort(leftList, compFn);
-            rightList = this._divideMergeSort(rightList, compFn);
+    /**
+     * Employs a merge sort operation on a list, defaulting to 'this' list.
+     */
+    sort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType> = this): RefList<KeyType, DataType> {
+        if (list.size <= 1) {
+            return list;
         }
 
-        return this._combineMergeSort(leftList, rightList, compFn);
+        const middle = Math.floor(list.size / 2);
+        const leftList = list.slice(0, middle);
+        const rightList = list.slice(middle);
+
+        return this.merge(
+            compareFn,
+            this.sort(compareFn, leftList),
+            this.sort(compareFn, rightList)
+        );
     }
 
-    _combineMergeSort(leftList: RefList<KeyType, DataType>,
-                      rightList: RefList<KeyType, DataType>,
-                      compFn: ComparatorFn<DataType>): RefList<KeyType, DataType> {
-        let leftIndex = 0,
-            rightIndex = 0,
-            leftSize = leftList.size,
-            rightSize = rightList.size,
-            combinedList = new RefList<KeyType, DataType>(this.keyPath);
+    merge(compareFn: ComparatorFn<DataType>,
+          leftList: RefList<KeyType, DataType>,
+          rightList: RefList<KeyType, DataType>): RefList<KeyType, DataType> {
+        let result = new RefList<KeyType, DataType>(this.keyPath),
+            indexLeft = 0,
+            indexRight = 0;
 
-        while (leftIndex < leftSize || rightIndex < rightSize) {
-            let leftItem = leftList[leftIndex],
-                rightItem = rightList[rightIndex];
-
-            if (leftItem !== undefined) {
-                if (rightItem === undefined) {
-                    combinedList.add(leftItem);
-                    leftIndex++;
-                } else {
-                    if (compFn(leftItem, rightItem)) {
-                        combinedList.add(leftItem);
-                        leftIndex++;
-                    } else {
-                        combinedList.add(rightItem);
-                        rightIndex++;
-                    }
-                }
+        while (indexLeft < leftList.size && indexRight < rightList.size) {
+            let leftNode = leftList.at(indexLeft),
+                rightNode = rightList.at(indexRight);
+            if(compareFn(leftNode, rightNode)) {
+                result.add(leftNode);
+                indexLeft++;
             } else {
-                if (rightItem !== undefined) {
-                    combinedList.add(rightItem);
-                    rightIndex++;
-                }
+                result.add(rightNode);
+                indexRight++;
             }
         }
 
-        return combinedList;
+        return result.concat(leftList.slice(indexLeft)).concat(rightList.slice(indexRight));
     }
-
 }
 
