@@ -182,8 +182,82 @@ describe('RefList', () => {
             expect(testList.at(1).prev).to.equal(newColor.color);
         });
     });
-    describe('set', () => {});
-    describe('setAt', () => {});
+
+    describe('addAt', () => {
+        it('should add properly in the middle of a list', () => {
+            let newColor: ColorData = {
+                    color: 'purple',
+                    value: 'purple'
+                },
+                middlePos = Math.floor(testList.size / 2),
+                middleNode = testList.at(middlePos),
+                sizeRef = testList.size;
+
+            testList.addAt(middlePos, newColor);
+
+            expect(testList.get(testList.getIdOfItem(middleNode)).next).to.equal(newColor.color);
+            expect(testList.at(middlePos + 2).prev).to.equal(newColor.color);
+            expect(testList.at(middlePos + 1).color).to.equal(newColor.color);
+            expect(testList.size).to.equal(sizeRef + 1);
+        });
+
+        it('should add properly to the end of a list', () => {
+            let newColor: ColorData = {
+                    color: 'purple',
+                    value: 'purple'
+                },
+                sizeRef = testList.size;
+
+            testList.addAt(testList.size - 1, newColor);
+
+            expect(testList.getTail().color).to.equal(newColor.color);
+            expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
+            expect(testList.size).to.equal(sizeRef + 1);
+        });
+    });
+
+    describe('slice', () => {
+        it('should slice a list with two params', () => {
+            const slicedList = testList.slice(3, 5);
+            expect(slicedList.at(0).color).to.equal(testList.at(3).color);
+            expect(slicedList.at(slicedList.size - 1).color).to.equal(testList.at(4).color);
+            expect(slicedList.head).to.equal(testList.at(3).color);
+            expect(slicedList.tail).to.equal(testList.at(4).color);
+        });
+
+        it('should slice a list with one param', () => {
+            const slicedList = testList.slice(3);
+            expect(slicedList.at(0).color).to.equal(testList.at(3).color);
+            expect(slicedList.at(slicedList.size - 1).color).to.equal(testList.at(testList.size - 1).color);
+            expect(slicedList.head).to.equal(testList.at(3).color);
+            expect(slicedList.tail).to.equal(testList.at(testList.size - 1).color);
+        });
+    });
+
+    describe('splice', () => {
+        it('should splice a list with two params', () => {
+            const headRef = testList.at(3);
+            const tailRef = testList.at(4);
+            testList.splice(3, 5);
+            expect(testList.at(0).color).to.equal(headRef.color);
+            expect(testList.head).to.equal(headRef.color);
+            expect(testList.at(testList.size - 1).color).to.equal(tailRef.color);
+            expect(testList.tail).to.equal(tailRef.color);
+        });
+
+        it('should splice a list with one param', () => {
+            const headRef = testList.at(3);
+            const tailRef = testList.getTail();
+            testList.splice(3);
+            expect(testList.at(0).color).to.equal(headRef.color);
+            expect(testList.head).to.equal(headRef.color);
+            expect(testList.at(testList.size - 1).color).to.equal(tailRef.color);
+            expect(testList.tail).to.equal(tailRef.color);
+        });
+    });
+    describe('filter', () => {});
+    describe('concat', () => {});
+    describe('forEach', () => {});
 
     describe('Chainable Methods', () => {
         it('should be chainable from the given methods', () => {
@@ -191,22 +265,33 @@ describe('RefList', () => {
             expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
             expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
             expect(testList.addBefore('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addAt(0, { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.slice(0, 1)).to.be.instanceOf(RefList);
         });
     });
 
     /** non-chainable */
-    describe('get', () => {});
-    describe('getHead', () => {});
-    describe('getTail', () => {});
+    describe('get', () => {
+        it('should be able to get every node', () => {
+            colors.forEach(color => expect(testList.get(color.color)).to.be.not.equal(undefined));
+        });
+    });
+
+    describe('getHead', () => {
+        it('should be able to get the head', () => {
+            expect(testList.getHead()).to.be.not.equal(undefined);
+        });
+    });
+
+    describe('getTail', () => {
+        it('should be able to get the tail', () => {
+            expect(testList.getTail()).to.be.not.equal(undefined);
+        });
+    });
+
     describe('at', () => {});
-    describe('addAt', () => {});
     describe('getIdOfItem', () => {});
     describe('toArray', () => {});
-    describe('slice', () => {});
-    describe('splice', () => {});
-    describe('filter', () => {});
-    describe('forEach', () => {});
-    describe('concat', () => {});
 
     /** sort functionality */
     describe('sort', () => {});

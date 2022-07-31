@@ -138,79 +138,12 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this;
     }
 
-    set(nodeKey: KeyType, node: ListNode<KeyType, DataType> | DataType): RefList<KeyType, DataType> {
-        const tempNodeRef = this.nodes[nodeKey];
-        this.nodes[nodeKey] = {
-            ...node,
-            next: tempNodeRef.next,
-            prev: tempNodeRef.prev
-        };
-
-        return this;
-    }
-
-    setAt(nodePos: number, node: ListNode<KeyType, DataType> | DataType): RefList<KeyType, DataType> {
-        const tempNodeRef = this.at(nodePos);
-        this.nodes[this.getIdOfItem(tempNodeRef)] = {
-            ...node,
-            next: tempNodeRef.next,
-            prev: tempNodeRef.prev
-        };
-
-        return this;
-    }
-
-
-    /** non-Chain-able methods */
-
-    get(nodeKey: KeyType): ListNode<KeyType, DataType> {
-        return this.nodes[nodeKey];
-    }
-
-    getHead(): ListNode<KeyType, DataType> {
-        return this.get(this.head);
-    }
-
-    getTail(): ListNode<KeyType, DataType> {
-        return this.get(this.tail);
-    }
-
-    at(index: number): ListNode<KeyType, DataType> {
-        let currentNode = this.nodes[this.head];
-        for (let i = 0; i <= index; i++) {
-            if (i === index) {
-                return currentNode;
-            }
-
-            currentNode = this.nodes[currentNode.next];
-        }
-    }
-
     addAt(index: number, item: DataType): RefList<KeyType, DataType> {
         const prevNode = this.at(index);
 
         this.addAfter(this.getIdOfItem(prevNode), item);
 
         return this;
-    }
-
-    getIdOfItem(item: DataType): KeyType {
-        return objectPath.get(item, this.keyPath);
-    }
-
-    toArray(): DataType[] {
-        let currentNode = this.nodes[this.head];
-        const dataArray = [];
-
-        while (currentNode) {
-            let dataToPush = { ...currentNode };
-            delete dataToPush.next;
-            delete dataToPush.prev;
-            dataArray.push(dataToPush);
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-        }
-
-        return dataArray;
     }
 
     slice(start: number, end: number = this.size): RefList<KeyType, DataType> {
@@ -227,7 +160,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return slicedList;
     }
 
-    splice(start: number, end: number): RefList<KeyType, DataType> {
+    splice(start: number, end: number = this.size): RefList<KeyType, DataType> {
         let currentNode = this.at(0);
         let i = 0;
 
@@ -276,6 +209,50 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         });
 
         return this;
+    }
+
+    /** non-Chain-able methods */
+
+    get(nodeKey: KeyType): ListNode<KeyType, DataType> {
+        return this.nodes[nodeKey];
+    }
+
+    getHead(): ListNode<KeyType, DataType> {
+        return this.get(this.head);
+    }
+
+    getTail(): ListNode<KeyType, DataType> {
+        return this.get(this.tail);
+    }
+
+    at(index: number): ListNode<KeyType, DataType> {
+        let currentNode = this.nodes[this.head];
+        for (let i = 0; i <= index; i++) {
+            if (i === index) {
+                return currentNode;
+            }
+
+            currentNode = this.nodes[currentNode.next];
+        }
+    }
+
+    getIdOfItem(item: DataType): KeyType {
+        return objectPath.get(item, this.keyPath);
+    }
+
+    toArray(): DataType[] {
+        let currentNode = this.nodes[this.head];
+        const dataArray = [];
+
+        while (currentNode) {
+            let dataToPush = { ...currentNode };
+            delete dataToPush.next;
+            delete dataToPush.prev;
+            dataArray.push(dataToPush);
+            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
+        }
+
+        return dataArray;
     }
 
     /** Sort Management Methods */
