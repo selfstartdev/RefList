@@ -111,6 +111,34 @@ describe('RefList', () => {
     });
 
     describe('update', () => {
+        it('should change values of the given object', () => {
+            testList.update('yellow', { value: 'lightPurple' } as ColorData);
 
+            expect(testList.get('yellow').value).to.equal('lightPurple');
+        });
     });
+
+    describe('addAfter', () => {});
+    describe('addBefore', () => {});
+    describe('set', () => {});
+    describe('setAt', () => {});
+
+    /** non-chainable */
+    describe('get', () => {});
+    describe('getHead', () => {});
+    describe('getTail', () => {});
+    describe('at', () => {});
+    describe('addAt', () => {});
+    describe('getIdOfItem', () => {});
+    describe('toArray', () => {});
+    describe('slice', () => {});
+    describe('splice', () => {});
+    describe('filter', () => {});
+    describe('forEach', () => {});
+    describe('concat', () => {});
+
+    /** sort functionality */
+    describe('sort', () => {});
+    describe('merge', () => {});
+    describe('mergeAndSort', () => {});
 });

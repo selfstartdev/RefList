@@ -153,12 +153,12 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         return this.nodes[nodeKey];
     }
 
-    getTail(): ListNode<KeyType, DataType> {
-        return this.get(this.tail);
-    }
-
     getHead(): ListNode<KeyType, DataType> {
         return this.get(this.head);
+    }
+
+    getTail(): ListNode<KeyType, DataType> {
+        return this.get(this.tail);
     }
 
     at(index: number): ListNode<KeyType, DataType> {
@@ -266,10 +266,6 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
 
     /** Sort Management Methods */
 
-    mergeAndSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType>): RefList<KeyType, DataType> {
-        return this.concat(list).sort(compareFn);
-    }
-
     /**
      * Employs a merge sort operation on a list, defaulting to 'this' list.
      */
@@ -309,6 +305,10 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
         }
 
         return result.concat(leftList.slice(indexLeft)).concat(rightList.slice(indexRight));
+    }
+
+    mergeAndSort(compareFn: ComparatorFn<DataType>, list: RefList<KeyType, DataType>): RefList<KeyType, DataType> {
+        return this.concat(list).sort(compareFn);
     }
 }
 
