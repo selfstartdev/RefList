@@ -130,7 +130,7 @@ describe('RefList', () => {
 
             testList.addAfter(testList.getIdOfItem(middleNode), newColor);
 
-            expect(testList.at(middlePos).next).to.equal(newColor.color);
+            expect(testList.get(testList.getIdOfItem(middleNode)).next).to.equal(newColor.color);
             expect(testList.at(middlePos + 2).prev).to.equal(newColor.color);
             expect(testList.at(middlePos + 1).color).to.equal(newColor.color);
             expect(testList.size).to.equal(sizeRef + 1);
@@ -150,7 +150,38 @@ describe('RefList', () => {
         });
     });
 
-    describe('addBefore', () => {});
+    describe('addBefore', () => {
+        it('should properly put a node in the middle of a list', () => {
+            let newColor: ColorData = {
+                    color: 'purple',
+                    value: 'purple'
+                },
+                middlePos = Math.floor(testList.size / 2),
+                middleNode = testList.at(middlePos),
+                sizeRef = testList.size;
+
+            testList.addBefore(testList.getIdOfItem(middleNode), newColor);
+
+            expect(testList.get(testList.getIdOfItem(middleNode)).prev).to.equal(newColor.color);
+
+            expect(testList.at(middlePos - 1).next).to.equal(newColor.color);
+            expect(testList.at(middlePos).color).to.equal(newColor.color);
+            expect(testList.size).to.equal(sizeRef + 1);
+        });
+
+        it('should properly put a node at the start of a list', () => {
+            let newColor: ColorData = {
+                color: 'purple',
+                value: 'purple'
+            };
+
+            testList.addBefore(testList.head, newColor);
+
+            expect(testList.at(0).color).to.equal(newColor.color);
+            expect(testList.head).to.equal(newColor.color);
+            expect(testList.at(1).prev).to.equal(newColor.color);
+        });
+    });
     describe('set', () => {});
     describe('setAt', () => {});
 
@@ -159,6 +190,7 @@ describe('RefList', () => {
             expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
             expect(testList.update('yellow', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
             expect(testList.addAfter('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addBefore('yellow', { color: 'purple' })).to.be.instanceOf(RefList);
         });
     });
 

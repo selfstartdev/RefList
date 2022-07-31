@@ -125,8 +125,15 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> im
             ...item
         };
 
-        this.update(node.prev, { next: newItemId });
+        if (node.prev) {
+            this.update(node.prev, { next: newItemId });
+        } else {
+            this.head = newItemId;
+        }
+
         this.update(nodeKey, { prev: newItemId });
+
+        this.size++;
 
         return this;
     }
