@@ -8,6 +8,9 @@ import {
     ComparatorFn,
 } from '../types/types';
 
+import add from './methods/add';
+import deleteNode from './methods/delete';
+
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
 
@@ -62,64 +65,8 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
 
     /** Chain-able Methods */
 
-    add(item: DataType | ListNode<KeyType, DataType>): RefList<KeyType, DataType> {
-        const itemId = this.getIdOfItem(item);
-
-        let newNode = {
-            ...item,
-            prev: this.tail || null,
-            next: null
-        };
-
-        /** If head is not initialized, initialize head */
-        if (!this.head) {
-            this.head = itemId;
-        }
-
-        /**
-         *  If tail exists, add next param to node
-         */
-        if (this.tail) {
-            this.update(this.tail, { next: itemId} );
-        }
-
-        this.tail = itemId;
-
-        this.nodes[itemId] = newNode;
-
-        this.size++;
-
-        return this;
-    }
-
-    delete(nodeKey: KeyType): RefList<KeyType, DataType> {
-        const node = this.nodes[nodeKey];
-
-        if (node.prev) {
-            this.update(node.prev, {
-                next: node.next
-            });
-
-            if (nodeKey === this.tail) {
-                this.tail = node.prev;
-            }
-        }
-
-        if (node.next) {
-            this.update(node.next, {
-                prev: node.prev
-            });
-
-            if (nodeKey === this.head) {
-                this.head = node.next;
-            }
-        }
-
-        this.size--;
-        delete this.nodes[nodeKey];
-
-        return this;
-    }
+    add = add<KeyType, DataType>.bind(this);
+    delete = deleteNode<KeyType, DataType>.bind(this);
 
     update(nodeKey: KeyType, updated: Object): RefList<KeyType, DataType> {
         for (let key in updated) {
