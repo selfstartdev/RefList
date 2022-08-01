@@ -10,6 +10,9 @@ import {
 
 import add from './methods/add';
 import deleteNode from './methods/delete';
+import update from './methods/update';
+import addAfter from './methods/addAfter';
+import addBefore from './methods/addBefore';
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
@@ -67,60 +70,9 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
 
     add = add<KeyType, DataType>.bind(this);
     delete = deleteNode<KeyType, DataType>.bind(this);
-
-    update(nodeKey: KeyType, updated: Object): RefList<KeyType, DataType> {
-        for (let key in updated) {
-            this.nodes[nodeKey][key] = updated[key];
-        }
-
-        return this;
-    }
-
-    addAfter(nodeKey: KeyType, item: DataType): RefList<KeyType, DataType> {
-        const node = this.nodes[nodeKey];
-        const newItemId = this.getIdOfItem(item);
-
-        this.nodes[newItemId] = {
-            prev: nodeKey,
-            next: node.next || null,
-            ...item
-        };
-
-        if (node.next) {
-            this.update(node.next, {prev: newItemId});
-        } else {
-            this.tail = newItemId;
-        }
-
-        this.update(nodeKey, { next: newItemId });
-
-        this.size++;
-
-        return this;
-    }
-
-    addBefore(nodeKey: KeyType, item: DataType): RefList<KeyType, DataType> {
-        const node = this.nodes[nodeKey];
-        const newItemId = this.getIdOfItem(item);
-
-        this.nodes[newItemId] = {
-            next: nodeKey,
-            prev: node.prev || null,
-            ...item
-        };
-
-        if (node.prev) {
-            this.update(node.prev, { next: newItemId });
-        } else {
-            this.head = newItemId;
-        }
-
-        this.update(nodeKey, { prev: newItemId });
-
-        this.size++;
-
-        return this;
-    }
+    update = update<KeyType, DataType>.bind(this);
+    addAfter = addAfter<KeyType, DataType>.bind(this);
+    addBefore = addBefore<KeyType, DataType>.bind(this);
 
     addAt(index: number, item: DataType): RefList<KeyType, DataType> {
         const prevNode = this.at(index);
