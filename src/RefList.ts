@@ -13,6 +13,9 @@ import deleteNode from './methods/delete';
 import update from './methods/update';
 import addAfter from './methods/addAfter';
 import addBefore from './methods/addBefore';
+import addAt from './methods/addAt';
+import slice from './methods/slice';
+import splice from './methods/splice';
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
@@ -68,49 +71,14 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
 
     /** Chain-able Methods */
 
-    add = add<KeyType, DataType>.bind(this);
-    delete = deleteNode<KeyType, DataType>.bind(this);
-    update = update<KeyType, DataType>.bind(this);
-    addAfter = addAfter<KeyType, DataType>.bind(this);
-    addBefore = addBefore<KeyType, DataType>.bind(this);
-
-    addAt(index: number, item: DataType): RefList<KeyType, DataType> {
-        const prevNode = this.at(index);
-
-        this.addAfter(this.getIdOfItem(prevNode), item);
-
-        return this;
-    }
-
-    slice(start: number, end: number = this.size): RefList<KeyType, DataType> {
-        const slicedList = new RefList<KeyType, DataType>(this.keyPath, []);
-        let remainingNodes = end - start;
-        let currentNode = this.at(start);
-
-        while (currentNode && remainingNodes) {
-            slicedList.add(currentNode);
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-            remainingNodes--;
-        }
-
-        return slicedList;
-    }
-
-    splice(start: number, end: number = this.size): RefList<KeyType, DataType> {
-        let currentNode = this.at(0);
-        let i = 0;
-
-        while (currentNode) {
-            if ((i < start || i >= end)) {
-                this.delete(this.getIdOfItem(currentNode));
-            }
-
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-            i++;
-        }
-
-        return this;
-    }
+    public add = add<KeyType, DataType>.bind(this);
+    public delete = deleteNode<KeyType, DataType>.bind(this);
+    public update = update<KeyType, DataType>.bind(this);
+    public addAfter = addAfter<KeyType, DataType>.bind(this);
+    public addBefore = addBefore<KeyType, DataType>.bind(this);
+    public addAt = addAt<KeyType, DataType>.bind(this);
+    public slice = slice<KeyType, DataType>.bind(this);
+    public splice = splice<KeyType, DataType>.bind(this);
 
     filter(fn: FilterFn<DataType>): RefList<KeyType, DataType> {
         let currentNode = this.nodes[this.head];
