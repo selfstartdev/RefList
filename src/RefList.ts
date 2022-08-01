@@ -2,25 +2,62 @@ import objectPath from 'object-path';
 
 import {
     StringOrNumber,
-    IListState,
     ListNode,
     FilterFn,
     IteratorFn,
     ComparatorFn,
 } from '../types/types';
 
-export class RefList<KeyType extends StringOrNumber, DataType extends Object> implements IListState<KeyType, DataType> {
-    readonly keyPath: string;
+export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
+    private readonly _keyPath: string;
 
-    head: KeyType;
-    tail: KeyType;
-    size: number = 0;
-    nodes: Record<KeyType, ListNode<KeyType, DataType>> = {} as Record<KeyType, ListNode<KeyType, DataType>>;
+    private _head: KeyType;
+    private _tail: KeyType;
+    private _size: number = 0;
+    private _nodes: Record<KeyType, ListNode<KeyType, DataType>> = {} as Record<KeyType, ListNode<KeyType, DataType>>;
 
     constructor(keyPath: string, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
-        this.keyPath = keyPath;
+        this._keyPath = keyPath;
 
         dataArray.forEach((item: DataType) => this.add(item));
+    }
+
+    /** Getters and Setters */
+
+    public get keyPath(): string {
+        return this._keyPath;
+    }
+
+    public get head(): KeyType {
+        return this._head;
+    }
+
+    private set head(newHead: KeyType) {
+        this._head = newHead;
+    }
+
+    public get tail(): KeyType {
+        return this._tail;
+    }
+
+    private set tail(newTail: KeyType) {
+        this._tail = newTail;
+    }
+
+    public get size(): number {
+        return this._size;
+    }
+
+    private set size(newSize: number) {
+        this._size = newSize;
+    }
+
+    public get nodes(): Record<KeyType, ListNode<KeyType, DataType>> {
+        return this._nodes;
+    }
+
+    private set nodes(newNodes: Record<KeyType, ListNode<KeyType, DataType>>) {
+        this._nodes = newNodes;
     }
 
     /** Chain-able Methods */

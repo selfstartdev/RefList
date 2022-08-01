@@ -5,13 +5,6 @@ export type ListNodeExtension<KeyType> = {
 
 export type ListNode<KeyType, DataType> = DataType & ListNodeExtension<KeyType>;
 
-export interface IListState<KeyType extends (string | number), DataType> {
-    head: KeyType;
-    tail: KeyType;
-    nodes: Record<KeyType, ListNode<KeyType, DataType>>;
-    size: number;
-}
-
 export type StringOrNumber = string | number;
 
 export type FilterFn<DataType> = (item: DataType) => boolean;
