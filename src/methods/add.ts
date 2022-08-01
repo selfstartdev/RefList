@@ -1,7 +1,8 @@
 import { ListNode, StringOrNumber } from '../../types/types';
 import { RefList } from '../RefList';
 
-export default function add<KeyType extends StringOrNumber , DataType>(item: DataType | ListNode<KeyType, DataType>): RefList<KeyType, DataType> {
+export default function add<KeyType extends StringOrNumber , DataType>
+                        (item: DataType | ListNode<KeyType, DataType>): RefList<KeyType, DataType> {
     const itemId = this.getIdOfItem(item);
 
     let newNode = {

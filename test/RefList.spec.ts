@@ -56,7 +56,7 @@ describe('RefList', () => {
             testList.add(newColor);
 
             expect(testList.at(testList.size - 1).color).to.eql(newColor.color);
-            expect(testList.getTail().color).to.eql(newColor.color);
+            expect(testList.getTail().color).to.equal(newColor.color);
             expect(testList.tail).to.eql(testList.getIdOfItem(testList.getTail()));
             expect(testList.at(testList.size - 2).next).to.eql(testList.getIdOfItem(testList.getTail()));
         });

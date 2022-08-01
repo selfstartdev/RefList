@@ -1,7 +1,8 @@
 import { StringOrNumber } from '../../types/types';
 import { RefList } from '../RefList';
 
-export default function deleteNode<KeyType extends StringOrNumber, DataType>(nodeKey: KeyType): RefList<KeyType, DataType> {
+export default function deleteNode<KeyType extends StringOrNumber, DataType>
+                        (nodeKey: KeyType): RefList<KeyType, DataType> {
     const node = this.nodes[nodeKey];
 
     if (node.prev) {

@@ -3,8 +3,6 @@ import objectPath from 'object-path';
 import {
     StringOrNumber,
     ListNode,
-    FilterFn,
-    IteratorFn,
     ComparatorFn,
 } from '../types/types';
 
@@ -16,6 +14,12 @@ import addBefore from './methods/addBefore';
 import addAt from './methods/addAt';
 import slice from './methods/slice';
 import splice from './methods/splice';
+import filter from './methods/filter';
+import forEach from './methods/forEach';
+import concat from './methods/concat';
+import get from './methods/get';
+import getHead from './methods/getHead';
+import getTail from './methods/getTail';
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
@@ -79,55 +83,15 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     public addAt = addAt<KeyType, DataType>.bind(this);
     public slice = slice<KeyType, DataType>.bind(this);
     public splice = splice<KeyType, DataType>.bind(this);
-
-    filter(fn: FilterFn<DataType>): RefList<KeyType, DataType> {
-        let currentNode = this.nodes[this.head];
-
-        while (currentNode) {
-            if (!fn(currentNode)) {
-                this.delete(this.getIdOfItem(currentNode));
-            }
-
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-        }
-
-        return this;
-    }
-
-    forEach(fn: IteratorFn<DataType>): RefList<KeyType, DataType> {
-        let currentNode = this.nodes[this.head];
-        let index = 0;
-
-        while (currentNode) {
-            fn(currentNode, index);
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-            index++;
-        }
-
-        return this;
-    }
-
-    concat(data: RefList<KeyType, DataType> | DataType[]): RefList<KeyType, DataType> {
-        data.forEach((item) => {
-            this.add(item);
-        });
-
-        return this;
-    }
+    public filter = filter<KeyType, DataType>.bind(this);
+    public forEach = forEach<KeyType, DataType>.bind(this);
+    public concat = concat<KeyType, DataType>.bind(this);
 
     /** non-Chain-able methods */
 
-    get(nodeKey: KeyType): ListNode<KeyType, DataType> {
-        return this.nodes[nodeKey];
-    }
-
-    getHead(): ListNode<KeyType, DataType> {
-        return this.get(this.head);
-    }
-
-    getTail(): ListNode<KeyType, DataType> {
-        return this.get(this.tail);
-    }
+    public get = get<KeyType, DataType>.bind(this);
+    public getHead = getHead<KeyType, DataType>.bind(this);
+    public getTail = getTail<KeyType, DataType>.bind(this);
 
     at(index: number): ListNode<KeyType, DataType> {
         let currentNode = this.nodes[this.head];
