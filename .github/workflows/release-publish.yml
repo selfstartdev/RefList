@@ -21,5 +21,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
       - run: npm install
+      - run: git config user.name "Github Actions Bot"
+      - run: git config user.email "<>"
       - run: npm version ${{ github.event.release.tag_name }}
       - run: npm publish
