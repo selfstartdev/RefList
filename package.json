@@ -10,7 +10,8 @@
     "posttest": "npm run coverage",
     "coverage": "nyc report --reporter=json",
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "generate:docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -37,8 +38,6 @@
     "sinon": "14.0.0",
     "sinon-chai": "3.7.0",
     "ts-node": "10.9.1",
-    "typedoc": "^0.23.10",
-    "typedoc-plugin-markdown": "^3.13.4",
     "typescript": "4.7.4"
   },
   "dependencies": {
