@@ -20,6 +20,9 @@ import concat from './methods/concat';
 import get from './methods/get';
 import getHead from './methods/getHead';
 import getTail from './methods/getTail';
+import at from './methods/at';
+import getIdOfItem from './methods/getIdOfItem';
+import toArray from './methods/toArray';
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
@@ -92,36 +95,9 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     public get = get<KeyType, DataType>.bind(this);
     public getHead = getHead<KeyType, DataType>.bind(this);
     public getTail = getTail<KeyType, DataType>.bind(this);
-
-    at(index: number): ListNode<KeyType, DataType> {
-        let currentNode = this.nodes[this.head];
-        for (let i = 0; i <= index; i++) {
-            if (i === index) {
-                return currentNode;
-            }
-
-            currentNode = this.nodes[currentNode.next];
-        }
-    }
-
-    getIdOfItem(item: DataType): KeyType {
-        return objectPath.get(item, this.keyPath);
-    }
-
-    toArray(): DataType[] {
-        let currentNode = this.nodes[this.head];
-        const dataArray = [];
-
-        while (currentNode) {
-            let dataToPush = { ...currentNode };
-            delete dataToPush.next;
-            delete dataToPush.prev;
-            dataArray.push(dataToPush);
-            currentNode = currentNode.next ? this.nodes[currentNode.next] : null;
-        }
-
-        return dataArray;
-    }
+    public at = at<KeyType, DataType>.bind(this);
+    public getIdOfItem = getIdOfItem<KeyType, DataType>.bind(this);
+    public toArray = toArray<KeyType, DataType>.bind(this);
 
     /** Sort Management Methods */
 
