@@ -10,7 +10,7 @@
     "posttest": "npm run coverage",
     "coverage": "nyc report --reporter=json",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
