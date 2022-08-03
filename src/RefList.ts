@@ -3,7 +3,8 @@ import objectPath from 'object-path';
 import {
     StringOrNumber,
     ListNode,
-    ComparatorFn, RefListConfig,
+    ComparatorFn,
+    IMappedList,
 } from '../types/types';
 
 import add from './methods/add';
@@ -23,6 +24,9 @@ import getTail from './methods/getTail';
 import at from './methods/at';
 import getIdOfItem from './methods/getIdOfItem';
 import toArray from './methods/toArray';
+import toMap from './methods/toMap';
+
+export type MappedList<KeyType extends StringOrNumber, DataType> = IMappedList<KeyType, DataType>;
 
 export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private readonly _keyPath: string;
@@ -32,13 +36,13 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private _size: number = 0;
     private _nodes: Record<KeyType, ListNode<KeyType, DataType>> = {} as Record<KeyType, ListNode<KeyType, DataType>>;
 
-    constructor(keyPathOrConfig: string | RefListConfig<KeyType, DataType>, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
+    constructor(keyPathOrConfig: string | MappedList<KeyType, DataType>, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
         if (typeof keyPathOrConfig !== 'string') {
-            this._keyPath = keyPathOrConfig._keyPath;
-            this._head = keyPathOrConfig._head;
-            this._tail = keyPathOrConfig._tail;
-            this._size = keyPathOrConfig._size;
-            this._nodes = keyPathOrConfig._nodes;
+            this._keyPath = keyPathOrConfig.keyPath;
+            this._head = keyPathOrConfig.head;
+            this._tail = keyPathOrConfig.tail;
+            this._size = keyPathOrConfig.size;
+            this._nodes = keyPathOrConfig.nodes;
         } else {
             this._keyPath = keyPathOrConfig;
 
@@ -106,6 +110,7 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     public at = at<KeyType, DataType>.bind(this);
     public getIdOfItem = getIdOfItem<KeyType, DataType>.bind(this);
     public toArray = toArray<KeyType, DataType>.bind(this);
+    public toMap = toMap<KeyType, DataType>.bind(this);
 
     /** Sort Management Methods */
 
