@@ -3,7 +3,7 @@ import objectPath from 'object-path';
 import {
     StringOrNumber,
     ListNode,
-    ComparatorFn,
+    ComparatorFn, RefListConfig,
 } from '../types/types';
 
 import add from './methods/add';
@@ -32,10 +32,18 @@ export class RefList<KeyType extends StringOrNumber, DataType extends Object> {
     private _size: number = 0;
     private _nodes: Record<KeyType, ListNode<KeyType, DataType>> = {} as Record<KeyType, ListNode<KeyType, DataType>>;
 
-    constructor(keyPath: string, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
-        this._keyPath = keyPath;
+    constructor(keyPathOrConfig: string | RefListConfig<KeyType, DataType>, dataArray: DataType[] | RefList<KeyType, DataType> = []) {
+        if (typeof keyPathOrConfig !== 'string') {
+            this._keyPath = keyPathOrConfig._keyPath;
+            this._head = keyPathOrConfig._head;
+            this._tail = keyPathOrConfig._tail;
+            this._size = keyPathOrConfig._size;
+            this._nodes = keyPathOrConfig._nodes;
+        } else {
+            this._keyPath = keyPathOrConfig;
 
-        dataArray.forEach((item: DataType) => this.add(item));
+            dataArray.forEach((item: DataType) => this.add(item));
+        }
     }
 
     /** Getters and Setters */
