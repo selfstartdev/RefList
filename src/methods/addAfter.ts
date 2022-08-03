@@ -6,6 +6,11 @@ export default function addAfter<KeyType extends StringOrNumber, DataType>
     const node = this.nodes[nodeKey];
     const newItemId = this.getIdOfItem(item);
 
+    // item with id already exists, uncertain what to do so throw error
+    if (this.nodes[newItemId]) {
+        throw new Error(`Cannot execute addAfter, item with id of ${newItemId} already exists`);
+    }
+
     this.nodes[newItemId] = {
         prev: nodeKey,
         next: node.next || null,

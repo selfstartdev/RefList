@@ -19,6 +19,12 @@ export default function add<KeyType extends StringOrNumber , DataType>
         next: null
     };
 
+    // item with given id already exists
+    if (this.nodes[itemId]) {
+        this.nodes[itemId] = newNode;
+        return this;
+    }
+
     /**
      * If head is not initialized, initialize head
      */

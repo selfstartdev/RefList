@@ -79,6 +79,23 @@ describe('RefList', () => {
             expect(testList.tail).to.eql(testList.getIdOfItem(testList.getTail()));
             expect(testList.at(testList.size - 2).next).to.eql(testList.getIdOfItem(testList.getTail()));
         });
+
+        it('should overwrite an item if the item already exists', () => {
+            const initTail = testList.tail;
+            const initHead = testList.head;
+            const initSize = testList.size;
+
+            testList.add({
+                color: 'red',
+                value: 'red-ish'
+            });
+
+            expect(testList.head).to.equal(initHead);
+            expect(testList.tail).to.equal(initTail);
+            expect(testList.size).to.equal(initSize);
+
+            expect(testList.get('red').value).to.equal('red-ish');
+        });
     });
 
     describe('delete', () => {

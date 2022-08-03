@@ -107,13 +107,16 @@ list.concat(new RefList('color', [ {
  * value types
  */
 
-//returns list-node with id of purple
+// returns the number of listNodes in the list
+list.size;
+
+// returns list-node with id of purple
 list.get('purple');
 
-//returns the list node that matches the head
+// returns the list node that matches the head
 list.getHead();
 
-//returns the list node that matches the head
+// returns the list node that matches the head
 list.getTail();
 
 // returns the list node at the given position

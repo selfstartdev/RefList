@@ -6,6 +6,11 @@ export default function addBefore<KeyType extends StringOrNumber, DataType>
     const node = this.nodes[nodeKey];
     const newItemId = this.getIdOfItem(item);
 
+    // item with id already exists, uncertain what to do so throw error
+    if (this.nodes[newItemId]) {
+        throw new Error(`Cannot execute addBefore, item with id of ${newItemId} already exists`);
+    }
+
     this.nodes[newItemId] = {
         next: nodeKey,
         prev: node.prev || null,
