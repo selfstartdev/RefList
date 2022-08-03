@@ -505,10 +505,11 @@ describe('RefList', () => {
     describe('Chainable Methods', () => {
         it('should be chainable from the given methods', () => {
             expect(testList.delete(testList.head)).to.be.instanceOf(RefList);
+            expect(testList.add({ color: 'red', value: 'red'}));
             expect(testList.update('red', { value: 'lightPurple' } as ColorData)).to.be.instanceOf(RefList);
             expect(testList.addAfter('red', { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.addBefore('red', { color: 'purple' })).to.be.instanceOf(RefList);
-            expect(testList.addAt(0, { color: 'purple' })).to.be.instanceOf(RefList);
+            expect(testList.addBefore('red', { color: 'chartreuse' })).to.be.instanceOf(RefList);
+            expect(testList.addAt(0, { color: 'lavender' })).to.be.instanceOf(RefList);
             expect(testList.slice(0, 1)).to.be.instanceOf(RefList);
             expect(testList.splice(0, 2)).to.be.instanceOf(RefList);
             expect(testList.filter(item => true)).to.be.instanceOf(RefList);
