@@ -1,5 +1,3 @@
-import objectPath from 'object-path';
-
 import {
     StringOrNumber,
     ListNode,
