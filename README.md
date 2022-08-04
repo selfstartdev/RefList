@@ -107,8 +107,10 @@ list.concat(new RefList('color', [ {
  * value types
  */
 
-// returns the number of listNodes in the list
-list.size;
+
+list.size; // returns the number of listNodes in the list
+list.head; // id of head listNode
+list.tail; // id of tail listNode
 
 // returns list-node with id of purple
 list.get('purple');
@@ -127,6 +129,9 @@ list.getIdOfItem(list.at(5));
 
 // returns an array that matches position of the items
 list.toArray();
+
+// returns a basic object-map from the linkd list
+list.toMap();
 
 // implements a merge sort in O(log(n) * n) time complexity
 // takes a sort function which should return a bool depending on if a
