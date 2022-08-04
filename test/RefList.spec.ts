@@ -2,7 +2,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { RefList } from '../src/RefList';
+import { RefList, MappedList } from '../src/RefList';
 import { FilterFn, ListNode, IteratorFn } from '../types/types';
 import colors, { ColorData } from './test-cases/colors';
 
@@ -43,6 +43,31 @@ describe('RefList', () => {
 
             expect(testList.getIdOfItem(testList.at(0))).to.eql(testData.at(0).test.testPattern.value);
             expect(testList.getIdOfItem(testList.at(1))).to.eql(testData.at(1).test.testPattern.value);
+        });
+
+        it('should be able to build a RefList from a MappedList', () => {
+            const mappedList: MappedList<string, ColorData> = {
+                head: 'red',
+                tail: 'red',
+                size: 1,
+                keyPath: 'color',
+                nodes: {
+                    'red': {
+                        color: 'red',
+                        value: 'red',
+                        next: undefined,
+                        prev: undefined
+                    }
+                }
+            };
+
+            const refList = new RefList<string, ColorData>(mappedList);
+
+            expect(refList.head).to.equal(mappedList.head);
+            expect(refList.tail).to.equal(mappedList.tail);
+            expect(refList.size).to.equal(mappedList.size);
+            expect(refList.keyPath).to.equal(mappedList.keyPath);
+            expect(refList.get('red')).to.eql(mappedList.nodes['red']);
         });
     });
 
@@ -165,6 +190,15 @@ describe('RefList', () => {
             expect(testList.tail).to.equal(newColor.color);
             expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
         });
+
+        it('should throw an error if the item exists already', () => {
+            let newColor: ColorData = {
+                color: 'red',
+                value: 'red'
+            };
+
+            expect(testList.addAfter.bind(testList, 'blue', newColor)).to.throw();
+        });
     });
 
     describe('addBefore', () => {
@@ -198,6 +232,15 @@ describe('RefList', () => {
             expect(testList.head).to.equal(newColor.color);
             expect(testList.at(1).prev).to.equal(newColor.color);
         });
+
+        it('should throw an error if the item exists already', () => {
+            let newColor: ColorData = {
+                color: 'red',
+                value: 'red'
+            };
+
+            expect(testList.addBefore.bind(testList, 'blue', newColor)).to.throw();
+        });
     });
 
     describe('addAt', () => {
@@ -230,6 +273,15 @@ describe('RefList', () => {
             expect(testList.getTail().color).to.equal(newColor.color);
             expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
             expect(testList.size).to.equal(sizeRef + 1);
+        });
+
+        it('should throw an error if the item exists already', () => {
+            let newColor: ColorData = {
+                color: 'red',
+                value: 'red'
+            };
+
+            expect(testList.addAt.bind(testList, 2, newColor)).to.throw();
         });
     });
 
@@ -373,6 +425,23 @@ describe('RefList', () => {
             });
 
             expect(newArray).to.be.instanceOf(Array);
+        });
+    });
+
+    describe('toMap', () => {
+        it('should be able to generate a map', () => {
+            const newMap = testList.toMap();
+
+            expect(newMap).to.not.be.instanceOf(RefList);
+
+            expect(newMap.head).to.equal(testList.head);
+            expect(newMap.tail).to.equal(testList.tail);
+            expect(newMap.size).to.equal(testList.size);
+            expect(newMap.keyPath).to.equal(testList.keyPath);
+
+            testList.forEach((node) => {
+                expect(node).to.equal(newMap.nodes[node.color]);
+            });
         });
     });
 
