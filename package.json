@@ -1,6 +1,6 @@
 {
   "name": "reflist",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Reference based linked list solution in typescript",
   "main": "dist/RefList.js",
   "types": "dist/RefList.d.ts",
