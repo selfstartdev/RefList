@@ -6,12 +6,13 @@
   "types": "dist/RefList.d.ts",
   "scripts": {
     "start": "npx ts-node ./index.ts",
+    "pretest": "npm run lint",
     "test": "nyc mocha ./test/*.spec.ts --require ts-node/register",
     "posttest": "npm run coverage",
     "coverage": "nyc report --reporter=json",
     "build": "tsc",
     "prepare": "npm run build",
-    "generate:docs": "typedoc"
+    "lint": "npx eslint -f unix \"src/**/*.{ts,tsx}\""
   },
   "repository": {
     "type": "git",
@@ -31,8 +32,17 @@
     "@types/object-path": "0.11.1",
     "@types/sinon": "10.0.13",
     "@types/sinon-chai": "3.2.8",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
     "chai": "4.3.6",
     "codecov": "3.8.3",
+    "eslint": "^8.21.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-tsdoc": "^0.2.16",
+    "eslist": "^1.0.0-beta.1",
     "mocha": "10.0.0",
     "nyc": "15.1.0",
     "sinon": "14.0.0",
