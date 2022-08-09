@@ -364,7 +364,7 @@ describe('RefList', () => {
         });
 
         it('should concatenate another reflist', () => {
-            const concatendatedList = new RefList<string, ColorData>('color', [{
+            const concatenatedList = new RefList<string, ColorData>('color', [{
                 color: 'fuschia',
                 value: 'fuschia'
             }, {
@@ -372,12 +372,26 @@ describe('RefList', () => {
                 value: 'lavender'
             }]);
 
-            testList.concat(concatendatedList);
+            testList.concat(concatenatedList);
 
             expect(testList.size).to.equal(colors.length + 2);
             expect(testList.tail).to.equal('lavender');
             expect(testList.at(testList.size - 1).color).to.equal('lavender');
             expect(testList.at(testList.size - 2).color).to.equal('fuschia');
+        });
+
+        it('should properly handle when nodes with id exists', () => {
+            const concatenatedList = new RefList<string, ColorData>('color', [{
+                color: 'red',
+                value: 'red'
+            }, {
+                color: 'blue',
+                value: 'blue'
+            }]);
+
+            testList.concat(concatenatedList);
+
+            expect(testList.size).to.equal(colors.length);
         });
     });
 
@@ -541,18 +555,22 @@ describe('RefList', () => {
 
         it('should put a concatenated node at the start', () => {
             const newColor = { color: 'avocado', value: 'avocado' };
+            const refSize = testList.size;
             testList.mergeAndSort(compareFn, [newColor]);
             expect(testList.at(0).color).to.equal(newColor.color);
             expect(testList.head).to.equal(newColor.color);
             expect(testList.at(1).prev).to.equal(newColor.color);
+            expect(testList.size).to.equal(refSize + 1);
         });
 
         it('should put a concatenated node at the end', () => {
             const newColor = { color: 'zucchini', value: 'zucchini' };
+            const refSize = testList.size;
             testList.mergeAndSort(compareFn, [newColor]);
             expect(testList.at(testList.size - 1).color).to.equal(newColor.color);
             expect(testList.tail).to.equal(newColor.color);
             expect(testList.at(testList.size - 2).next).to.equal(newColor.color);
+            expect(testList.size).to.equal(refSize + 1);
         });
 
         it('should handle putting multiple nodes', () => {
@@ -562,12 +580,16 @@ describe('RefList', () => {
                 { color: 'fuschia', value: 'fuschia' }
             ];
             const sortedArray = colors.concat(newColors);
+            const refSize = testList.size;
+
             sortedArray.sort((a, b) => a.color < b.color ? -1 : 1);
             testList.mergeAndSort(compareFn, newColors);
 
             testList.forEach((node, i) => {
                 expect(node.color).to.equal(sortedArray[i].color);
             });
+
+            expect(testList.size).to.equal(refSize + newColors.length);
         });
     });
 
