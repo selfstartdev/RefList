@@ -21,7 +21,11 @@ export default function add<KeyType extends StringOrNumber , DataType>
 
     // item with given id already exists
     if (this.nodes[itemId]) {
-        this.nodes[itemId] = newNode;
+        this.nodes[itemId] = {
+            ...newNode,
+            prev: this.nodes[itemId].prev,
+            next: this.nodes[itemId].next
+        };
         return this;
     }
 

@@ -109,6 +109,8 @@ describe('RefList', () => {
             const initTail = testList.tail;
             const initHead = testList.head;
             const initSize = testList.size;
+            const refPrev = testList.get('red').prev;
+            const refNext = testList.get('red').next;
 
             testList.add({
                 color: 'red',
@@ -120,6 +122,8 @@ describe('RefList', () => {
             expect(testList.size).to.equal(initSize);
 
             expect(testList.get('red').value).to.equal('red-ish');
+            expect(testList.get('red').prev).to.equal(refPrev);
+            expect(testList.get('red').next).to.equal(refNext);
         });
     });
 
@@ -590,6 +594,19 @@ describe('RefList', () => {
             });
 
             expect(testList.size).to.equal(refSize + newColors.length);
+        });
+
+        it('handled merging existing items', () => {
+            const newColors = [
+                { color: 'red', value: 'red' },
+                { color: 'zucchini', value: 'zucchini' },
+                { color: 'blue', value: 'blue' }
+            ];
+            const refSize = testList.size;
+
+            testList.mergeAndSort(compareFn, newColors);
+
+            expect(testList.size).to.equal(refSize + 1);
         });
     });
 
